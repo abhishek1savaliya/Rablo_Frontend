@@ -69,39 +69,42 @@ const ProductList = () => {
     return (
         <div className="container mx-auto p-4">
             <div className='container mx-auto flex items-center justify-between'>
-                <h2 className="text-2xl font-bold mb-4 text-blue-600">Product List</h2>
+                <h2 className="text-3xl font-bold mb-4 text-pink-600">Product List</h2>
 
                 <div className="flex items-center space-x-4">
-
-
-                    <div className="flex items-center">
-                        <span class="mr-2">Rating :</span>
-                        <select id="ratingSelect" className="p-2 border rounded-md" onChange={(e) => setRating(e.target.value)}>
+                    <div className="flex items-center space-x-4">
+                        <span class="mr-2 text-xl text-green-600">Rating:</span>
+                        <select id="ratingSelect" class="p-2 border rounded-md" onchange="setRating(this.value)">
                             <option value="1">1 Star</option>
                             <option value="2">2 Stars</option>
                             <option value="3">3 Stars</option>
                             <option value="4">4 Stars</option>
                             <option value="5">5 Stars</option>
                         </select>
-                    </div>
 
+                        <label htmlFor="numberInput" className="block text-xl font-medium text-blue-600 mb-1">Amount:</label>
+                        <input
+                            type="number"
+                            id="numberInput"
+                            name="numberInput"
+                            placeholder="Enter the amount..."
+                            className="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out"
+                            onChange={(e) => setAmount(e.target.value)}
+                        />
 
-                    <div class="max-w-md">
-                        <label for="numberInput" class="block text-sm font-medium text-gray-700">Enter Amount:</label>
-                        <input type="number" id="numberInput" name="numberInput" class="mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out" onChange={(e) => setAmount(e.target.value)} />
-                    </div>
-                    <div className="flex items-center">
-                        <span class="text-xl font-medium mr-2 text-gray-900 dark:text-gray-600">Featured</span>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                value=""
-                                className="sr-only peer"
-                                checked={isChecked}
-                                onChange={handleToggleChange}
-                            />
-                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                        </label>
+                        <div className="flex items-center">
+                            <span className="text-xl font-medium mr-2 text-red-600">Featured</span>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    value=""
+                                    className="sr-only peer"
+                                    checked={isChecked}
+                                    onChange={handleToggleChange}
+                                />
+                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
                     </div>
 
                     <Link to="/add">
@@ -119,8 +122,6 @@ const ProductList = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3">
                 {products.map((product) => (
                     <div key={product.productId} className="relative bg-gradient-to-r from-purple-200 via-pink-200 to-yellow-200 rounded p-4 shadow-md transition duration-300 hover:bg-gray-100 hover:shadow-lg">
-
-
                         <button
                             onClick={() => handleDelete(product._id)}
                             className="absolute top-2 right-2 text-red-600 hover:text-red-800 transition duration-300 rounded-full p-2 bg-white"
@@ -132,8 +133,9 @@ const ProductList = () => {
 
 
                         <div className="p-6 bg-white rounded-lg shadow-md">
-                            <h3 className="text-xl font-semibold mb-3 text-purple-800">{product.name}</h3>
-                            <p className="text-lg text-gray-800">${product.price}</p>
+                            <h3 className="text-xl font-semibold mb-3 text-purple-800">{product.name.charAt(0).toUpperCase() + product.name.slice(1)}</h3>
+
+                            <p className="text-lg text-gray-800"> Rs.{product.price}</p>
 
 
                             <div className="mt-3 flex items-center space-x-3">
@@ -166,8 +168,6 @@ const ProductList = () => {
                         </div>
                     </div>
                 ))}
-
-
             </div>
         </div>
 

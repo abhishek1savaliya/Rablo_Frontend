@@ -42,6 +42,11 @@ const SignupForm = () => {
       }
 
     } catch (error) {
+      setTimeout(() => {
+        setLoader(false)
+        alert("User already exist")
+        navigate('/login')
+      }, 1000)
       console.error('Signup error:', error);
     }
   };

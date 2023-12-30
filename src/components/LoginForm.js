@@ -33,6 +33,12 @@ const LoginForm = () => {
         navigate("/")
       }, 1000)
     } catch (error) {
+      setTimeout(() => {
+        setLoader(false)
+        navigate("/signup")
+      }, 1000)
+      alert("User Not found. Please Signup the user")
+      
       console.error('Login error:', error);
     }
   };

@@ -4,115 +4,67 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import moment from 'moment';
-import AddProduct from './AddProduct';
 
 const ProductList = () => {
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const token = localStorage.getItem('token');
     const [isChecked, setIsChecked] = useState(false);
-    const [rating, setRating] = useState(0)
-    const [amount, setAmount] = useState()
+    const [rating, setRating] = useState(0);
+    const [amount, setAmount] = useState();
+
+    const BASE_URL = 'https://rablo-backend-3rrt.onrender.com';
+
+    const headers = {
+        'token': token,
+        'Content-Type': 'application/json'
+    };
+
+    const fetchData = async (endpoint) => {
+        try {
+            const response = await axios.get(`${BASE_URL}/${endpoint}`, { headers });
+            setProducts(response.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
     useEffect(() => {
         if (!token) {
-            navigate('/login')
+            navigate('/login');
+        } else {
+            fetchData('api/products');
         }
-    }, [])
+    }, [token]);
 
-    const fetchData = async () => {
-        try {
-            const response = await axios.get('https://rablo-backend-3rrt.onrender.com/api/products', {
-                headers: {
-                    'token': localStorage.getItem('token'),
-                    'Content-Type': 'application/json'
-                }
-            });
-            setProducts(response.data);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-
-    const featureData = async (value) => {
-        try {
-            const response = await axios.get(`https://rablo-backend-3rrt.onrender.com/api/product/feature?value=${value}`, {
-                headers: {
-                    'token': localStorage.getItem('token'),
-                    'Content-Type': 'application/json'
-                }
-            });
-            setProducts(response.data);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-
-    const amountData = async (val) => {
-        try {
-            const response = await axios.get(`https://rablo-backend-3rrt.onrender.com/api/product/price/${val}`, {
-                headers: {
-                    'token': localStorage.getItem('token'),
-                    'Content-Type': 'application/json'
-                }
-            });
-            setProducts(response.data);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-
-    const ratingData = async (rat) => {
-        try {
-            const response = await axios.get(`https://rablo-backend-3rrt.onrender.com/api/product/rating/${rat}`, {
-                headers: {
-                    'token': localStorage.getItem('token'),
-                    'Content-Type': 'application/json'
-                }
-            });
-            setProducts(response.data);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-
-    const handleToggleChange = async () => {
+    const handleToggleChange = () => {
         setIsChecked(prevChecked => !prevChecked);
     };
 
     useEffect(() => {
-        featureData(isChecked)
+        fetchData(`api/product/feature?value=${isChecked}`);
     }, [isChecked]);
 
     useEffect(() => {
-        amountData(amount)
+        fetchData(`api/product/price/${amount}`);
     }, [amount]);
 
     useEffect(() => {
-        ratingData(rating)
-    }, [rating])
-
-    useEffect(() => {
-        fetchData()
-    }, []);
+        fetchData(`api/product/rating/${rating}`);
+    }, [rating]);
 
     const handleDelete = async (id) => {
         try {
-            const response = await axios.delete(`https://rablo-backend-3rrt.onrender.com/api/product/${id}`, {
-                headers: {
-                    'token': localStorage.getItem('token'),
-                    'Content-Type': 'application/json'
-                }
-            });
-            fetchData();
+            await axios.delete(`${BASE_URL}/api/product/${id}`, { headers });
+            fetchData('api/products');
         } catch (error) {
             console.error('Error fetching data:', error);
         }
-    }
+    };
 
     const handleEdit = (product) => {
-        navigate('/edit', { state: product })
-    }
+        navigate('/edit', { state: product });
+    };
 
     return (
         <div className="container mx-auto p-4">
@@ -168,9 +120,10 @@ const ProductList = () => {
                 {products.map((product) => (
                     <div key={product.productId} className="relative bg-gradient-to-r from-purple-200 via-pink-200 to-yellow-200 rounded p-4 shadow-md transition duration-300 hover:bg-gray-100 hover:shadow-lg">
 
+
                         <button
                             onClick={() => handleDelete(product._id)}
-                            className="absolute top-2 right-2 text-red-600 hover:text-red-800 transition duration-300"
+                            className="absolute top-2 right-2 text-red-600 hover:text-red-800 transition duration-300 rounded-full p-2 bg-white"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -178,22 +131,42 @@ const ProductList = () => {
                         </button>
 
 
-                        <h3 className="text-lg font-semibold mb-2 text-purple-800">{product.name}</h3>
-                        <p className="text-gray-800">${product.price}</p>
-                        <p className={`text-${product.featured ? 'green' : 'red'}-500`}>Featured: {product.featured ? 'Yes' : 'No'}</p>
-                        <p className={`text-${product.rating >= 4 ? 'green' : 'orange'}-500`}>Rating: {product.rating}</p>
-                        <p className="text-teal-500">Company: {product.company}</p>
-                        <p className="text-gray-600">Created At: {moment(product.createdAt).fromNow()}</p>
-                        <p className="text-gray-600">Updated At: {moment(product.updatedAt).fromNow()}</p>
-                        <div class="mt-4 flex justify-end">
-                            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => {
-                                handleEdit(product)
-                            }} >
-                                Edit
-                            </button>
+                        <div className="p-6 bg-white rounded-lg shadow-md">
+                            <h3 className="text-xl font-semibold mb-3 text-purple-800">{product.name}</h3>
+                            <p className="text-lg text-gray-800">${product.price}</p>
+
+
+                            <div className="mt-3 flex items-center space-x-3">
+                                <span className={`px-3 py-1 rounded-full text-sm ${product.featured ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
+                                    {product.featured ? 'Featured: Yes' : 'Featured: No'}
+                                </span>
+
+                                <span className={`px-3 py-1 rounded-full text-sm ${product.rating >= 4 ? 'bg-green-500 text-white' : product.rating < 2 ? 'bg-red-500 text-white' : 'bg-orange-500 text-white'}`}>
+                                    Rating: {product.rating}
+                                </span>
+
+                            </div>
+
+
+                            <div className="mt-3 flex justify-between text-sm text-gray-600">
+                                <p>Company: {product.company}</p>
+                                <p>Created At: {moment(product.createdAt).fromNow()}</p>
+                                <p>Updated At: {moment(product.updatedAt).fromNow()}</p>
+                            </div>
+
+
+                            <div className="mt-4 flex justify-end">
+                                <button
+                                    className="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-semibold rounded"
+                                    onClick={() => handleEdit(product)}
+                                >
+                                    Edit
+                                </button>
+                            </div>
                         </div>
                     </div>
                 ))}
+
 
             </div>
         </div>

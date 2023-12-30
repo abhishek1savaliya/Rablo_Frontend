@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
+import moment from 'moment';
+import AddProduct from './AddProduct';
 
 const ProductList = () => {
     const navigate = useNavigate();
@@ -166,9 +168,9 @@ const ProductList = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3">
                 {products.map((product) => (
                     <div key={product.productId} className="relative bg-gradient-to-r from-purple-200 via-pink-200 to-yellow-200 rounded p-4 shadow-md transition duration-300 hover:bg-gray-100 hover:shadow-lg">
-                        {/* Delete Button */}
+
                         <button
-                            onClick={() => handleDelete(product._id)}  // Assuming you have a function handleDelete
+                            onClick={() => handleDelete(product._id)}
                             className="absolute top-2 right-2 text-red-600 hover:text-red-800 transition duration-300"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -176,14 +178,19 @@ const ProductList = () => {
                             </svg>
                         </button>
 
-                        {/* Product Details */}
+
                         <h3 className="text-lg font-semibold mb-2 text-purple-800">{product.name}</h3>
                         <p className="text-gray-800">${product.price}</p>
                         <p className={`text-${product.featured ? 'green' : 'red'}-500`}>Featured: {product.featured ? 'Yes' : 'No'}</p>
                         <p className={`text-${product.rating >= 4 ? 'green' : 'orange'}-500`}>Rating: {product.rating}</p>
                         <p className="text-teal-500">Company: {product.company}</p>
-                        <p className="text-gray-600">Created At: {new Date(product.createdAt).toLocaleString()}</p>
-                        <p className="text-gray-600">Updated At: {new Date(product.updatedAt).toLocaleString()}</p>
+                        <p className="text-gray-600">Created At: {moment(product.createdAt).fromNow()}</p>
+                        <p className="text-gray-600">Updated At: {moment(product.updatedAt).fromNow()}</p>
+                        <div class="mt-4 flex justify-end">
+                            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                             Edit
+                            </button>
+                        </div>
                     </div>
                 ))}
 

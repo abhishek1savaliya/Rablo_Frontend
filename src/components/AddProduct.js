@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+const token = localStorage.getItem('token');
 
 const AddProduct = () => {
     const navigate = useNavigate();
@@ -13,6 +13,12 @@ const AddProduct = () => {
         rating: 0.0,
         company: ''
     });
+
+    useEffect(() => {
+        if (!token) {
+            navigate('/login')
+        }
+    }, [])
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;

@@ -14,10 +14,6 @@ const ProductList = () => {
     const [rating, setRating] = useState(0)
     const [amount, setAmount] = useState()
 
-    console.log(amount)
-    console.log(rating)
-
-
     useEffect(() => {
         if (!token) {
             navigate('/login')
@@ -114,6 +110,9 @@ const ProductList = () => {
         }
     }
 
+    const handleEdit = (product) => {
+        navigate('/edit', { state: product })
+    }
 
     return (
         <div className="container mx-auto p-4">
@@ -187,8 +186,10 @@ const ProductList = () => {
                         <p className="text-gray-600">Created At: {moment(product.createdAt).fromNow()}</p>
                         <p className="text-gray-600">Updated At: {moment(product.updatedAt).fromNow()}</p>
                         <div class="mt-4 flex justify-end">
-                            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                             Edit
+                            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => {
+                                handleEdit(product)
+                            }} >
+                                Edit
                             </button>
                         </div>
                     </div>

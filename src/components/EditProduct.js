@@ -1,10 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from "react-router-dom";
-const token = localStorage.getItem('token');
+import { useLocation, useNavigate } from 'react-router-dom';
 
-const AddProduct = () => {
+const EditProduct = () => {
+    const location = useLocation();
+    const { state: product } = location;
     const navigate = useNavigate();
+
+    const token = localStorage.getItem('token');
+
+    useEffect(() => {
+        if (!token) {
+            navigate("/login")
+        }
+    })
+    
     const [productInfo, setProductInfo] = useState({
         productId: '',
         name: '',
@@ -15,10 +25,10 @@ const AddProduct = () => {
     });
 
     useEffect(() => {
-        if (!token) {
-            navigate('/login')
+        if (product) {
+            setProductInfo(product);
         }
-    }, [])
+    }, [product]);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -30,15 +40,9 @@ const AddProduct = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const token = localStorage.getItem('token');
-        if (!token) {
-            navigate("/login")
-        }
-
         try {
-            const response = await axios.post(
-                'https://rablo-backend-3rrt.onrender.com/api/products',
+            const response = await axios.put(
+                `https://rablo-backend-3rrt.onrender.com/api/product/${product._id}`,
                 productInfo,
                 {
                     headers: {
@@ -49,13 +53,12 @@ const AddProduct = () => {
             );
 
             if (response.data) {
-                navigate("/")
+                navigate("/");
             }
         } catch (error) {
-            console.error('Error submitting product:', error);
+            console.error('Error updating product:', error);
         }
     };
-
 
     return (
         <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-8">
@@ -68,11 +71,9 @@ const AddProduct = () => {
                         value={productInfo.productId}
                         onChange={handleChange}
                         className="shadow appearance-none border rounded w-full py-2 px-3 mt-1 leading-tight focus:outline-none focus:shadow-outline"
-                        required
                     />
                 </label>
             </div>
-
             <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
                     Name:
@@ -82,7 +83,6 @@ const AddProduct = () => {
                         value={productInfo.name}
                         onChange={handleChange}
                         className="shadow appearance-none border rounded w-full py-2 px-3 mt-1 leading-tight focus:outline-none focus:shadow-outline"
-                        required
                     />
                 </label>
             </div>
@@ -96,7 +96,6 @@ const AddProduct = () => {
                         value={productInfo.price}
                         onChange={handleChange}
                         className="shadow appearance-none border rounded w-full py-2 px-3 mt-1 leading-tight focus:outline-none focus:shadow-outline"
-                        required
                     />
                 </label>
             </div>
@@ -148,10 +147,10 @@ const AddProduct = () => {
                 type="submit"
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
-                Add Product
+                Update Product
             </button>
         </form>
     );
 };
 
-export default AddProduct;
+export default EditProduct;

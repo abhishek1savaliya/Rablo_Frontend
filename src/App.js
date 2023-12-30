@@ -4,6 +4,7 @@ import AddProduct from './components/AddProduct';
 import LoginForm from './components/LoginForm';
 import SignupForm from './components/SignupForm';
 import Navbar from './components/Navbar';
+import EditProduct from './components/EditProduct';
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="/signup" element={<SignupForm />} />
           <Route path="/" exact element={<ProductList />} />
           <Route path="/add" exact element={<AddProduct />} />
+          <Route path="/edit" exact element={<EditProduct />} />
         </Routes>
 
       </div>

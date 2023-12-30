@@ -95,8 +95,22 @@ const ProductList = () => {
     }, [rating])
 
     useEffect(() => {
-        fetchData(isChecked)
+        fetchData()
     }, []);
+
+    const handleDelete = async (id) => {
+        try {
+            const response = await axios.delete(`https://rablo-backend-3rrt.onrender.com/api/product/${id}`, {
+                headers: {
+                    'token': localStorage.getItem('token'),
+                    'Content-Type': 'application/json'
+                }
+            });
+            fetchData();
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
 
 
     return (
@@ -151,7 +165,18 @@ const ProductList = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3">
                 {products.map((product) => (
-                    <div key={product.productId} className="bg-gradient-to-r from-purple-200 via-pink-200 to-yellow-200 rounded p-4 shadow-md transition duration-300 hover:bg-gray-100 hover:shadow-lg">
+                    <div key={product.productId} className="relative bg-gradient-to-r from-purple-200 via-pink-200 to-yellow-200 rounded p-4 shadow-md transition duration-300 hover:bg-gray-100 hover:shadow-lg">
+                        {/* Delete Button */}
+                        <button
+                            onClick={() => handleDelete(product._id)}  // Assuming you have a function handleDelete
+                            className="absolute top-2 right-2 text-red-600 hover:text-red-800 transition duration-300"
+                        >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+
+                        {/* Product Details */}
                         <h3 className="text-lg font-semibold mb-2 text-purple-800">{product.name}</h3>
                         <p className="text-gray-800">${product.price}</p>
                         <p className={`text-${product.featured ? 'green' : 'red'}-500`}>Featured: {product.featured ? 'Yes' : 'No'}</p>
@@ -161,6 +186,7 @@ const ProductList = () => {
                         <p className="text-gray-600">Updated At: {new Date(product.updatedAt).toLocaleString()}</p>
                     </div>
                 ))}
+
             </div>
         </div>
 

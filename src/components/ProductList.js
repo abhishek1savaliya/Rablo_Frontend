@@ -9,23 +9,24 @@ const ProductList = () => {
     const [products, setProducts] = useState([]);
     const token = localStorage.getItem('token');
     const [isChecked, setIsChecked] = useState(false);
+    const [rating, setRating] = useState(0)
+    const [amount, setAmount] = useState()
 
-    useEffect(()=>{
-        if(!token){
+    console.log(amount)
+    console.log(rating)
+
+
+    useEffect(() => {
+        if (!token) {
             navigate('/login')
         }
-    },[])
-
-    const handleToggleChange = () => {
-        setIsChecked((prevChecked) => !prevChecked);
-        console.log(isChecked)
-    };
+    }, [])
 
     const fetchData = async () => {
         try {
             const response = await axios.get('https://rablo-backend-3rrt.onrender.com/api/products', {
                 headers: {
-                    'token': localStorage.getItem('token'), // Replace with your actual token key
+                    'token': localStorage.getItem('token'),
                     'Content-Type': 'application/json'
                 }
             });
@@ -35,21 +36,95 @@ const ProductList = () => {
         }
     };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    const featureData = async (value) => {
+        try {
+            const response = await axios.get(`https://rablo-backend-3rrt.onrender.com/api/product/feature?value=${value}`, {
+                headers: {
+                    'token': localStorage.getItem('token'),
+                    'Content-Type': 'application/json'
+                }
+            });
+            setProducts(response.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
+    const amountData = async (val) => {
+        try {
+            const response = await axios.get(`https://rablo-backend-3rrt.onrender.com/api/product/price/${val}`, {
+                headers: {
+                    'token': localStorage.getItem('token'),
+                    'Content-Type': 'application/json'
+                }
+            });
+            setProducts(response.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    const ratingData = async (rat) => {
+        try {
+            const response = await axios.get(`https://rablo-backend-3rrt.onrender.com/api/product/rating/${rat}`, {
+                headers: {
+                    'token': localStorage.getItem('token'),
+                    'Content-Type': 'application/json'
+                }
+            });
+            setProducts(response.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    const handleToggleChange = async () => {
+        setIsChecked(prevChecked => !prevChecked);
+    };
+
+    useEffect(() => {
+        featureData(isChecked)
+    }, [isChecked]);
+
+    useEffect(() => {
+        amountData(amount)
+    }, [amount]);
+
+    useEffect(() => {
+        ratingData(rating)
+    }, [rating])
+
+    useEffect(() => {
+        fetchData(isChecked)
+    }, []);
 
 
     return (
         <div className="container mx-auto p-4">
             <div className='container mx-auto flex items-center justify-between'>
                 <h2 className="text-2xl font-bold mb-4 text-blue-600">Product List</h2>
-                <div className="flex items-center">
+
+                <div className="flex items-center space-x-4">
+
+
                     <div className="flex items-center">
-                        <div className="ms-3 text-xl font-medium mr-5 text-gray-900 dark:text-gray-300">
-                            <span>Featured</span>
-                        </div>
+                        <span class="mr-2">Rating :</span>
+                        <select id="ratingSelect" className="p-2 border rounded-md" onChange={(e) => setRating(e.target.value)}>
+                            <option value="1">1 Star</option>
+                            <option value="2">2 Stars</option>
+                            <option value="3">3 Stars</option>
+                            <option value="4">4 Stars</option>
+                            <option value="5">5 Stars</option>
+                        </select>
+                    </div>
+
+
+                    <div class="max-w-md">
+                        <label for="numberInput" class="block text-sm font-medium text-gray-700">Enter Amount:</label>
+                        <input type="number" id="numberInput" name="numberInput" class="mt-1 p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300 transition duration-150 ease-in-out" onChange={(e) => setAmount(e.target.value)} />
+                    </div>
+                    <div className="flex items-center">
+                        <span class="text-xl font-medium mr-2 text-gray-900 dark:text-gray-600">Featured</span>
                         <label className="relative inline-flex items-center cursor-pointer">
                             <input
                                 type="checkbox"
@@ -72,6 +147,7 @@ const ProductList = () => {
                     </Link>
                 </div>
             </div>
+
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3">
                 {products.map((product) => (

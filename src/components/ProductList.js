@@ -107,14 +107,17 @@ const ProductList = () => {
                         </div>
                     </div>
 
-                    <Link to="/add">
-                        <button
-                            type="button"
-                            className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200"
-                        >
-                            Add Product
-                        </button>
-                    </Link>
+
+                    <button
+                        type="button"
+                        className="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-white bg-blue-500 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200"
+                        onClick={() => {
+                            navigate('/add')
+                        }}
+                    >
+                        Add Product
+                    </button>
+
                 </div>
             </div>
 

@@ -1,7 +1,5 @@
-// src/ProductList.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import moment from 'moment';
 
@@ -73,14 +71,16 @@ const ProductList = () => {
 
                 <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-4">
-                        <span class="mr-2 text-xl text-green-600">Rating:</span>
-                        <select id="ratingSelect" class="p-2 border rounded-md" onchange="setRating(this.value)">
+                        <span className="mr-2 text-xl text-green-600">Rating:</span>
+                        <select id="ratingSelect" className="p-2 border rounded-md" onChange={(e) => setRating(e.target.value)}>
+                            <option value="" disabled selected>Select Rating</option>
                             <option value="1">1 Star</option>
                             <option value="2">2 Stars</option>
                             <option value="3">3 Stars</option>
                             <option value="4">4 Stars</option>
                             <option value="5">5 Stars</option>
                         </select>
+
 
                         <label htmlFor="numberInput" className="block text-xl font-medium text-blue-600 mb-1">Amount:</label>
                         <input
